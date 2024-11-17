@@ -3,6 +3,9 @@ service: article-app                      # service name used by Cloudformation 
 frameworkVersion: '3'                     # serverless version v3
                                           # why not v4? - v4 requires SERVERLESS_LICENSE_KEY via Github CI/CD
 custom:                                   # define custom params and setting of plugins
+  esbuild:                                # configure bundling
+    bundle: true
+    minify: true
   articleTableName: 'articles-${self:provider.stage}'
 
 provider:
@@ -26,6 +29,7 @@ package:
 
 plugins:                                  # add plugins for powerful configuration
   - serverless-iam-roles-per-function     # allows setting role on function level
+  - serverless-esbuild                    # allows minimize lambdas size and other bundling stuff
 
 functions:                                # define all lambda functions
   - ${file(serverless-functions.yml)}     # import lambdas from external configs to simplify configuration
