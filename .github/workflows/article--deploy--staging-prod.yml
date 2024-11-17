@@ -1,0 +1,25 @@
+# Deploy article app on aws for STAGING and PROD stages
+
+name: 'Article :: Deploy :: Staging To Prod'
+
+on: workflow_dispatch
+
+jobs:
+  # deploy on staging first
+  deploy-staging:
+    uses: ./.github/workflows/deploy-service.yml
+    with:
+      stage: staging
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  # deploy on prod once staging succeeded
+  deploy-prod:
+    uses: ./.github/workflows/deploy-service.yml
+    needs: [deploy-staging]
+    with:
+      stage: prod
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
