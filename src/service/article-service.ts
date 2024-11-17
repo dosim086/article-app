@@ -3,11 +3,12 @@ import {
   GetItemCommand,
   PutItemCommand,
   ScanCommand,
+  UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { randomUUID } from 'node:crypto';
 import { ARTICLE_TABLE_NAME } from '../foundation/runtime.js';
-import { Article, ArticleInput } from '../foundation/types.js';
+import { Article, ArticleInput, ArticleUpdate } from '../foundation/types.js';
 import { createDynamoDBClient } from '../utils/dynamodb-util.js';
 
 /**
@@ -78,4 +79,39 @@ export const deleteArticle = async (articleId: string): Promise<void> => {
       Key: marshall({ id: articleId }),
     })
   );
+};
+
+/**
+ *  Updates an article in dynamodb articles table by given articleId and ArticleUpdate params
+ */
+export const updateArticle = async (
+  articleId: string,
+  article: ArticleUpdate
+): Promise<void> => {
+  const attrUpdateExpr: string[] = [];
+  const attrNames: Record<string, string> = {};
+  const attrValues: Record<string, string> = {};
+
+  if (article.title) {
+    attrUpdateExpr.push(`#title = :title`);
+    attrNames['#title'] = 'title';
+    attrValues[':title'] = article.title;
+  }
+
+  if (article.content) {
+    attrUpdateExpr.push(`#content = :content`);
+    attrNames['#content'] = 'content';
+    attrValues[':content'] = article.content;
+  }
+
+  attrUpdateExpr.length &&
+    (await createDynamoDBClient().send(
+      new UpdateItemCommand({
+        TableName: ARTICLE_TABLE_NAME,
+        Key: marshall({ id: articleId }),
+        UpdateExpression: `SET ${attrUpdateExpr.join(', ')}`,
+        ExpressionAttributeNames: attrNames,
+        ExpressionAttributeValues: marshall(attrValues),
+      })
+    ));
 };

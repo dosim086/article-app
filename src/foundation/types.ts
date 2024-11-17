@@ -6,6 +6,8 @@ export type Article = {
 
 export type ArticleInput = Omit<Article, 'id'>;
 
+export type ArticleUpdate = Partial<ArticleInput>;
+
 export type Log = {
   message: string;
   details?: unknown;
