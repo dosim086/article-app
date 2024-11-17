@@ -1,4 +1,9 @@
-import { PutItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
+import {
+  DeleteItemCommand,
+  GetItemCommand,
+  PutItemCommand,
+  ScanCommand,
+} from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { randomUUID } from 'node:crypto';
 import { ARTICLE_TABLE_NAME } from '../foundation/runtime.js';
@@ -41,4 +46,36 @@ export const createArticle = async ({
   );
 
   return articleId;
+};
+
+/**
+ *  Returns an article from dynamodb articles table by given articleId
+ */
+export const getArticle = async (
+  articleId: string | null
+): Promise<Article | null> => {
+  if (!articleId) {
+    return null;
+  }
+
+  const { Item } = await createDynamoDBClient().send(
+    new GetItemCommand({
+      TableName: ARTICLE_TABLE_NAME,
+      Key: marshall({ id: articleId }),
+    })
+  );
+
+  return Item ? (unmarshall(Item) as Article) : null;
+};
+
+/**
+ *  Deletes an article in dynamodb articles table by given articleId
+ */
+export const deleteArticle = async (articleId: string): Promise<void> => {
+  await createDynamoDBClient().send(
+    new DeleteItemCommand({
+      TableName: ARTICLE_TABLE_NAME,
+      Key: marshall({ id: articleId }),
+    })
+  );
 };
