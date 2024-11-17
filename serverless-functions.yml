@@ -1,0 +1,100 @@
+# lambda config for list of articles
+get-articles:
+  handler: 'src/handlers/api/get-articles.handler'
+  description: Get API to retrieve list of articles
+  events:
+    # run lambda by http event: method GET and path v1/articles
+    - http:
+        method: GET
+        path: v1/articles
+  iamRoleStatements:
+    # allowed permissions for lambda role
+    - Effect: Allow
+      Action:
+        # allowed on table: scanning records
+        - dynamodb:Scan
+      Resource:
+        # reference to DynamoDB table resource
+        - Fn::GetAtt: [ArticlesTable, Arn]
+
+# lambda config for creating article
+create-article:
+  handler: 'src/handlers/api/create-article.handler'
+  description: POST API to create new article by params in request body
+  events:
+    # run lambda by http event: method POST and path v1/article
+    - http:
+        method: POST
+        path: v1/article
+        cors: true
+  iamRoleStatements:
+    # allowed permissions for lambda role
+    - Effect: Allow
+      Action:
+        # allowed on table: adding record
+        - dynamodb:PutItem
+      Resource:
+        # reference to DynamoDB table resource
+        - Fn::GetAtt: [ArticlesTable, Arn]
+
+# lambda config for reading article
+get-article:
+  handler: 'src/handlers/api/get-article.handler'
+  description: GET API to retrieve individual article by given articleId in url
+  events:
+    # run lambda by http event: method GET and path v1/article/{articleId}
+    - http:
+        method: GET
+        path: v1/article/{articleId}
+        cors: true
+  iamRoleStatements:
+    # allowed permissions for lambda role
+    - Effect: Allow
+      Action:
+        # allowed on table: reading record
+        - dynamodb:GetItem
+      Resource:
+        # reference to DynamoDB table resource
+        - Fn::GetAtt: [ArticlesTable, Arn]
+
+# lambda config for updating article
+update-article:
+  handler: 'src/handlers/api/update-article.handler'
+  description: PATCH API to update individual article by given articleId in url and params in request body
+  events:
+    # run lambda by http event: method PATCH and path v1/article/{articleId}
+    - http:
+        method: PATCH
+        path: v1/article/{articleId}
+        cors: true
+  iamRoleStatements:
+    # allowed permissions for lambda role
+    - Effect: Allow
+      Action:
+        # allowed on table: reading and updating record
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource:
+        # reference to DynamoDB table resource
+        - Fn::GetAtt: [ArticlesTable, Arn]
+
+# lambda config for deleting article
+delete-article:
+  handler: 'src/handlers/api/delete-article.handler'
+  description: DELETE API to remove individual article by given articleId in url
+  events:
+    # run lambda by http event: method DELETE and path v1/article/{articleId}
+    - http:
+        method: DELETE
+        path: v1/article/{articleId}
+        cors: true
+  iamRoleStatements:
+    # allowed permissions for lambda role
+    - Effect: Allow
+      Action:
+        # allowed on table: reading and deleting record
+        - dynamodb:GetItem
+        - dynamodb:DeleteItem
+      Resource:
+        # reference to DynamoDB table resource
+        - Fn::GetAtt: [ArticlesTable, Arn]

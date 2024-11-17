@@ -24,6 +24,12 @@ provider:
 package:
   individually: true                      # minimize size of each lambda bundle
 
+plugins:                                  # add plugins for powerful configuration
+  - serverless-iam-roles-per-function     # allows setting role on function level
+
+functions:                                # define all lambda functions
+  - ${file(serverless-functions.yml)}     # import lambdas from external configs to simplify configuration
+
 resources:                                # define all resources that will be created within aws
   Resources:
     ArticlesTable:                        # custom logical name of articles table resource
