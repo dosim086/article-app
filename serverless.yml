@@ -1,8 +1,21 @@
-service: article-app
+service: article-app                      # service name used by Cloudformation to name stacks
 
-frameworkVersion: '3'
-
+frameworkVersion: '3'                     # serverless version v3
+                                          # why not v4? - v4 requires SERVERLESS_LICENSE_KEY via Github CI/CD
 provider:
-  name: aws
-  runtime: nodejs20.x
-  stage: ${opt:stage, 'dev'}
+  name: aws                               # aws for cloud infrastructure 
+  runtime: nodejs20.x                     # node v20 used in lambdas
+  stage: ${opt:stage, 'dev'}              # environment to deploy the app
+  region: eu-west-1                       # region where the app is deployed
+  memorySize: 512                         # max RAM size allocated to a lambda
+  timeout: 30                             # max execution time of a lambda
+  versionFunctions: false                 # disable lambda versioning
+  tracing:                                # enable tracing for debugging
+    apiGateway: true
+    lambda: true
+  environment:                            # shared env vars for all lambdas
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+
+package:
+  individually: true                      # minimize size of each lambda bundle
