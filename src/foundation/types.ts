@@ -4,6 +4,8 @@ export type Article = {
   content: string;
 };
 
+export type ArticleInput = Omit<Article, 'id'>;
+
 export type Log = {
   message: string;
   details?: unknown;

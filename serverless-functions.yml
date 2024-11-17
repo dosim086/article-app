@@ -23,10 +23,10 @@ create-article:
   handler: 'src/handlers/api/create-article.handler'
   description: POST API to create new article by params in request body
   events:
-    # run lambda by http event: method POST and path v1/article
+    # run lambda by http event: method POST and path v1/articles
     - http:
         method: POST
-        path: v1/article
+        path: v1/articles
         cors: true
   iamRoleStatements:
     # allowed permissions for lambda role
@@ -43,10 +43,10 @@ get-article:
   handler: 'src/handlers/api/get-article.handler'
   description: GET API to retrieve individual article by given articleId in url
   events:
-    # run lambda by http event: method GET and path v1/article/{articleId}
+    # run lambda by http event: method GET and path v1/articles/{articleId}
     - http:
         method: GET
-        path: v1/article/{articleId}
+        path: v1/articles/{articleId}
         cors: true
   iamRoleStatements:
     # allowed permissions for lambda role
@@ -63,10 +63,10 @@ update-article:
   handler: 'src/handlers/api/update-article.handler'
   description: PATCH API to update individual article by given articleId in url and params in request body
   events:
-    # run lambda by http event: method PATCH and path v1/article/{articleId}
+    # run lambda by http event: method PATCH and path v1/articles/{articleId}
     - http:
         method: PATCH
-        path: v1/article/{articleId}
+        path: v1/articles/{articleId}
         cors: true
   iamRoleStatements:
     # allowed permissions for lambda role
@@ -84,10 +84,10 @@ delete-article:
   handler: 'src/handlers/api/delete-article.handler'
   description: DELETE API to remove individual article by given articleId in url
   events:
-    # run lambda by http event: method DELETE and path v1/article/{articleId}
+    # run lambda by http event: method DELETE and path v1/articles/{articleId}
     - http:
         method: DELETE
-        path: v1/article/{articleId}
+        path: v1/articles/{articleId}
         cors: true
   iamRoleStatements:
     # allowed permissions for lambda role
