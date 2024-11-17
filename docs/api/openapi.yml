@@ -1,0 +1,159 @@
+openapi: '3.0.0'
+info:
+  title: Articles API
+  version: '1.0.0'
+  description: |
+    The Articles API manages articles by creating, updating and more
+
+servers:
+  - url: https://{env}.yourdomain.com
+    variables:
+      env:
+        default: api.dev
+        enum:
+          - api.dev # dev
+          - api # prod
+
+paths:
+  /v1/articles:
+    get:
+      description: Get API to retrieve list of articles
+      security: []
+      responses:
+        200:
+          description: List of articles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                        content:
+                          type: string
+                      required:
+                        - id
+                        - title
+                        - content
+                      additionalProperties: false
+                required:
+                  - articles
+                additionalProperties: false
+    post:
+      description: POST API to create new article by params in request body
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              additionalProperties: false
+      responses:
+        200:
+          description: Article successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  articleId:
+                    type: string
+                required:
+                  - articleId
+                additionalProperties: false
+  /v1/articles/{articleId}:
+    get:
+      description: GET API to retrieve individual article by given articleId in url
+      security: []
+      parameters:
+        - in: path
+          name: articleId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Returns article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  article:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      title:
+                        type: string
+                      content:
+                        type: string
+                    required:
+                      - id
+                      - title
+                      - content
+                    additionalProperties: false
+        400:
+          description: Bad request error
+        404:
+          description: Article not found
+    patch:
+      description: PATCH API to update individual article by given articleId in url and params in request body
+      security: []
+      parameters:
+        - in: path
+          name: articleId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              additionalProperties: false
+      responses:
+        200:
+          description: Article successfully updated
+        400:
+          description: Bad request error
+    delete:
+      description: DELETE API to remove individual article by given articleId in url
+      security: []
+      parameters:
+        - in: path
+          name: articleId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Article successfully deleted
+        400:
+          description: Bad request error
+        404:
+          description: Article not found
