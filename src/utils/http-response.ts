@@ -1,11 +1,17 @@
 import { HttpResponse } from '../foundation/types.js';
 
+/**
+ * List of standard headers to be included in each response
+ */
 const standardHeaders = (extraHeaders: HttpResponse['headers'] = {}) => ({
   ...extraHeaders,
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Credentials': true,
 });
 
+/**
+ * Response for created resource
+ */
 export const created = (): HttpResponse => {
   return {
     statusCode: 201,
@@ -13,6 +19,9 @@ export const created = (): HttpResponse => {
   };
 };
 
+/**
+ * Response for any successful action
+ */
 export const success = (
   data: Record<string, unknown> | undefined = undefined
 ): HttpResponse => {
@@ -29,6 +38,9 @@ export const success = (
   return response;
 };
 
+/**
+ * Response if resource not found
+ */
 export const notFound = (): HttpResponse => {
   return {
     statusCode: 404,
@@ -36,6 +48,9 @@ export const notFound = (): HttpResponse => {
   };
 };
 
+/**
+ * Response if request or params incorrect
+ */
 export const badRequest = (): HttpResponse => {
   return {
     statusCode: 400,
@@ -43,6 +58,9 @@ export const badRequest = (): HttpResponse => {
   };
 };
 
+/**
+ * Response for any unexpected system errors
+ */
 export const systemError = (): HttpResponse => {
   return {
     statusCode: 500,

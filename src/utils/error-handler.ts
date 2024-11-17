@@ -2,6 +2,10 @@ import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import * as response from './http-response.js';
 import { getLoggerInstance } from './logger.js';
 
+/**
+ * Wrapper func (HOC) that allows to capture unhandled exception
+ * from lambda and log the error and return correct 500 to user
+ */
 export const errorHandler =
   (controller: Function) =>
   async (event: APIGatewayProxyEvent, context: Context) => {

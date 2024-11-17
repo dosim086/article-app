@@ -1,3 +1,9 @@
+export type Article = {
+  id: string;
+  title: string;
+  content: string;
+};
+
 export type Log = {
   message: string;
   details?: unknown;
