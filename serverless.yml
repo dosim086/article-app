@@ -2,6 +2,9 @@ service: article-app                      # service name used by Cloudformation 
 
 frameworkVersion: '3'                     # serverless version v3
                                           # why not v4? - v4 requires SERVERLESS_LICENSE_KEY via Github CI/CD
+custom:                                   # define custom params and setting of plugins
+  articleTableName: 'articles-${self:provider.stage}'
+
 provider:
   name: aws                               # aws for cloud infrastructure 
   runtime: nodejs20.x                     # node v20 used in lambdas
@@ -16,6 +19,21 @@ provider:
   environment:                            # shared env vars for all lambdas
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
+    ARTICLE_TABLE_NAME: ${self:custom.articleTableName}
 
 package:
   individually: true                      # minimize size of each lambda bundle
+
+resources:                                # define all resources that will be created within aws
+  Resources:
+    ArticlesTable:                        # custom logical name of articles table resource
+      Type: AWS::DynamoDB::Table          # define type of created resource: DynamodDB table in our case
+      Properties:
+        TableName: ${self:custom.articleTableName}
+        BillingMode: PAY_PER_REQUEST      # aws will only bill for real requests to dynamodb
+        KeySchema:                        # define schema of primary key
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:             # define attributes of primary key
+          - AttributeName: id
+            AttributeType: S
