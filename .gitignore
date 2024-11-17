@@ -1,0 +1,7 @@
+node_modules
+dist
+.serverless
+.dynamodb
+.esbuild
+.DS_Store
+tsconfig.tsbuildinfo
